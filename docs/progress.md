@@ -24,8 +24,8 @@ This document tracks active development progress, phase milestones, and subphase
 ## Phase 1: Baseline Distributed Rate Limiter MVP
 
 ### Subphase Breakdown & Status
-- [ ] **Subphase 1.1: Core Token Bucket Algorithm & State Model**
-  - Status: *Ready to start*
+- [x] **Subphase 1.1: Core Token Bucket Algorithm & State Model**
+  - Status: *Completed (Tests passing, Walkthrough authored)*
   - Deliverables: Pure domain token bucket implementation, time-decay refill calculations, burst handling, strict unit test suite (TDD).
 - [ ] **Subphase 1.2: Redis Storage Adapter & State Synchronization**
   - Status: *Pending*
@@ -44,3 +44,4 @@ This document tracks active development progress, phase milestones, and subphase
 | Date | Subphase | Action Taken | Author/Agent |
 | :--- | :--- | :--- | :--- |
 | 2026-11-22 | Project Init | Initialized repository governance, `AGENTS.md`, `CLAUDE.md`, uncommitted `SLOs.md`, and progress tracker. | Lead Architect |
+| 2026-11-22 | Subphase 1.1 | Implemented TokenBucketEngine domain model and 9 unit tests under TDD; authored walkthrough. | Lead Architect |
