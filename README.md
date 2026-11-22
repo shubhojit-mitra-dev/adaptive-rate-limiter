@@ -89,3 +89,4 @@ uv run pytest
 
 ## Engineering Guidelines
 All development follows strict **Test-Driven Development (TDD)**, **SOLID principles**, and **atomic single-file Git commits**. Refer to [`AGENTS.md`](AGENTS.md) for detailed operational protocols.
+
