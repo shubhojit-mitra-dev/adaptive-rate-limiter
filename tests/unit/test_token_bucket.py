@@ -173,3 +173,4 @@ class TestTokenBucketRefill:
         assert state.tokens == 4.0
         # Timestamp must not regress
         assert state.last_refill_timestamp == 1000.0
+
