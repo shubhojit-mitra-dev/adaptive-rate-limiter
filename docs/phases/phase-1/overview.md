@@ -64,3 +64,4 @@ In Phase 1, the system operates as a classic distributed rate-limiting proxy/mid
 - [ ] Requests exceeding threshold immediately receive `429 Too Many Requests` with a valid `Retry-After` header.
 - [ ] Refill behavior verified across simulated elapsed time intervals.
 - [ ] Baseline performance benchmark document recorded with exact p50/p95/p99 latency metrics.
+
