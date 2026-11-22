@@ -6,12 +6,13 @@ rejection semantics, and integration with the TokenBucketEngine.
 """
 
 import pytest
+import pytest_asyncio
 import fakeredis.aioredis
 from rate_limiter.domain.token_bucket import RateLimitRule, BucketState
 from rate_limiter.infrastructure.redis import RedisStorageBackend
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def fake_redis():
     """Provides an isolated in-memory async Redis instance."""
     client = fakeredis.aioredis.FakeRedis(decode_responses=True)
@@ -20,12 +21,13 @@ async def fake_redis():
     await client.aclose()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def storage(fake_redis):
     """Provides a RedisStorageBackend backed by fake_redis."""
     return RedisStorageBackend(client=fake_redis, key_prefix="test_rl")
 
 
+@pytest.mark.asyncio
 class TestRedisStorageBackend:
     """Integration test suite for Redis state persistence and rate limit evaluation."""
 
@@ -135,3 +137,24 @@ class TestRedisStorageBackend:
         allowed_result_b = await storage.evaluate(key="tenant_B", rule=rule, cost=1.0, current_timestamp=now)
         assert allowed_result_b.allowed is True
         assert allowed_result_b.remaining == 4.0
+
+    async def test_corrupted_hash_returns_none(self, storage: RedisStorageBackend, fake_redis) -> None:
+        # Manually create a key with missing 'last_refill' field
+        await fake_redis.hset("test_rl:corrupted", "tokens", "5.0")
+        state = await storage.get_state("corrupted")
+        assert state is None
+
+    async def test_multi_token_cost_evaluation(self, storage: RedisStorageBackend) -> None:
+        rule = RateLimitRule(capacity=10.0, refill_rate=2.0)
+        now = 1700000000.0
+
+        # Request cost = 6.0
+        result = await storage.evaluate(key="user_multi", rule=rule, cost=6.0, current_timestamp=now)
+        assert result.allowed is True
+        assert result.remaining == 4.0
+
+        # Request cost = 5.0 (only 4.0 available) -> Denied
+        denied = await storage.evaluate(key="user_multi", rule=rule, cost=5.0, current_timestamp=now)
+        assert denied.allowed is False
+        assert denied.remaining == 4.0
+
