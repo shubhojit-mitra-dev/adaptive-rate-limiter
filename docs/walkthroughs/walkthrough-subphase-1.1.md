@@ -76,3 +76,4 @@ When a client is rejected, returning HTTP 429 without guidance causes aggressive
 $$\text{Deficit} = \text{Cost} - \text{Tokens}_{\text{available}}$$
 $$\text{Retry-After} = \frac{\text{Deficit}}{R}$$
 This informs the caller of the exact fractional second needed until sufficient tokens exist to satisfy their request.
+
